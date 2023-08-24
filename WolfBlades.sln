@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WolfBlades.ConsoleApp", "WolfBlades.ConsoleApp\WolfBlades.ConsoleApp.csproj", "{8D1DB860-142E-4C5D-8215-9210D7FC5587}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WolfBlades.BackEnd", "WolfBlades.BackEnd\WolfBlades.BackEnd.csproj", "{946F71F9-3193-4B5E-A5E4-198E0F912164}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D1DB860-142E-4C5D-8215-9210D7FC5587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D1DB860-142E-4C5D-8215-9210D7FC5587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D1DB860-142E-4C5D-8215-9210D7FC5587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D1DB860-142E-4C5D-8215-9210D7FC5587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{946F71F9-3193-4B5E-A5E4-198E0F912164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{946F71F9-3193-4B5E-A5E4-198E0F912164}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{946F71F9-3193-4B5E-A5E4-198E0F912164}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{946F71F9-3193-4B5E-A5E4-198E0F912164}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {362F0105-A029-4FB4-9F53-A27445DE940B}
+	EndGlobalSection
+EndGlobal
