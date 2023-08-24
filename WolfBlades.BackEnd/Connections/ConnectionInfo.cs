@@ -1,6 +1,4 @@
-﻿using Fleck;
-
-namespace WolfBlades.BackEnd.Connections
+﻿namespace WolfBlades.BackEnd.Connections
 {
     public struct ConnectionInfo
     {

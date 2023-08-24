@@ -18,7 +18,7 @@ public class TaskStorageInfo : IDataStorage<TaskInfo>
         Description = data.Description;
         DocumentID = data.DocumentID;
         BindUnitID = data.BindUnitID;
-        InChargeUsers = data.InChargeUsers.ToList().ToArray();
+        InChargeUsers = data.InChargeUsers.ToArray();
         Progress = data.Progress;
         StartTime = data.StartTime.ConvertToDateTime();
         DeadLine = data.DeadLine.ConvertToDateTime();

@@ -15,8 +15,8 @@ public class UnitStorageInfo : IDataStorage<UnitInfo>
         DisplayName = data.DisplayName;
         UnitGroup = data.UnitGroup;
         CurrentUserID = data.CurrentUserID;
-        InProgressTasks = data.InProgressTasks.ToList().ToArray();
-        InChargeUsers = data.InChargeUsers.ToList().ToArray();
+        InProgressTasks = data.InProgressTasks.ToArray();
+        InChargeUsers = data.InChargeUsers.ToArray();
     }
 
     public void WriteTo(ref UnitInfo data)
@@ -25,7 +25,7 @@ public class UnitStorageInfo : IDataStorage<UnitInfo>
         data.DisplayName = DisplayName;
         data.UnitGroup = UnitGroup;
         data.CurrentUserID = CurrentUserID;
-        data.InProgressTasks = InProgressTasks.ToList().ToArray();
-        data.InChargeUsers = InChargeUsers.ToList().ToArray();
+        data.InProgressTasks = InProgressTasks.ToArray();
+        data.InChargeUsers = InChargeUsers.ToArray();
     }
 }

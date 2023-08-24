@@ -106,12 +106,13 @@ public class Server : ICanStart
 
     private void RegisterCommands()
     {
-        Commands.Add("echo", HandleEcho);
-        Commands.Add("query", HandleQuery);
-        Commands.Add("login", HandleLogin);
-        Commands.Add("update", HandleUpdate);
-        Commands.Add("append", HandleAppend);
-        Commands.Add("remove", HandleRemove);
+        //指令                                快捷指令
+        Commands.Add("echo", HandleEcho); //!echo <message>                    #<message> 
+        Commands.Add("query", HandleQuery); //!query <target> <selector> <value> ?<target> <selector> <value>
+        Commands.Add("login", HandleLogin); //!login <name> <password>
+        Commands.Add("update", HandleUpdate); //!update <target> <id> <value>      *<target> <id> <value>
+        Commands.Add("append", HandleAppend); //!append <target> <content>         +<target> <content>
+        Commands.Add("remove", HandleRemove); //!remove <target> <id>              -<target> <id>
 
         QueryCommands.Add("unit", HandleQueryUnit);
         QueryCommands.Add("user", HandleQueryUser);
@@ -285,10 +286,7 @@ public class Server : ICanStart
         var value = arg[(space_index + 1)..];
         var id = HandleParseID(id_string, send);
         var query_info = JsonConvert.DeserializeObject<TQuery>(value);
-        if (!manager.UpdateItem(id, query_info))
-        {
-            id = -1;
-        }
+        if (!manager.UpdateItem(id, query_info)) id = -1;
         send(id.ToString());
     }
 
