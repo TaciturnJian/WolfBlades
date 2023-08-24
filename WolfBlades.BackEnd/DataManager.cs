@@ -4,31 +4,6 @@ using Newtonsoft.Json;
 
 namespace WolfBlades.BackEnd;
 
-public interface IDataStorage<T> where T : struct
-{
-    void ReadFrom(T data);
-    void WriteTo(ref T data);
-}
-
-public interface IDataManager<out TStorage, TQuery>
-    where TStorage : class, IDataStorage<TQuery>
-    where TQuery : struct
-{
-    bool QueryInfoByID(int id, ref TQuery info);
-
-    int[] QueryIDListBySelector(Func<TStorage, bool> selector);
-
-    int AddItem(TQuery info);
-
-    bool RemoveItem(int id);
-
-    bool UpdateItem(int id, TQuery info);
-
-    bool SaveDataToFile(string path);
-
-    bool ReadDataFromFile(string path);
-}
-
 public class DataManager<TStorage, TQuery> : IDataManager<TStorage, TQuery>
     where TStorage : class, IDataStorage<TQuery>, new()
     where TQuery : struct
