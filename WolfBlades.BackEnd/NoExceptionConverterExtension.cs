@@ -1,6 +1,6 @@
 ﻿namespace WolfBlades.BackEnd;
 
-public static class NoExceptionConverters
+public static class NoExceptionConverterExtension
 {
     public static DateTime ConvertToDateTime(this string message)
     {

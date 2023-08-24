@@ -23,6 +23,10 @@ public interface IDataManager<out TStorage, TQuery>
     bool RemoveItem(int id);
 
     bool UpdateItem(int id, TQuery info);
+
+    bool SaveDataToFile(string path);
+
+    bool ReadDataFromFile(string path);
 }
 
 public class DataManager<TStorage, TQuery> : IDataManager<TStorage, TQuery>
@@ -82,7 +86,7 @@ public class DataManager<TStorage, TQuery> : IDataManager<TStorage, TQuery>
         }
         catch (Exception ex)
         {
-            FleckLog.Error("Cannot save data to file", ex);
+            FleckLog.Error("无法将数据保存到文件", ex);
             return false;
         }
     }
@@ -106,7 +110,7 @@ public class DataManager<TStorage, TQuery> : IDataManager<TStorage, TQuery>
         }
         catch (Exception ex)
         {
-            FleckLog.Error("Cannot read data from file", ex);
+            FleckLog.Error("无法从文件中读取数据", ex);
             return false;
         }
     }
