@@ -6,7 +6,7 @@ public static class NoExceptionConverters
     {
         try
         {
-            return DateTime.ParseExact(message, "s", null);
+            return DateTime.ParseExact(message.Replace(' ', 'T'), "s", null);
         }
         catch
         {

@@ -1,6 +1,4 @@
-﻿#define DEBUG
-
-using Fleck;
+﻿using Fleck;
 
 namespace WolfBlades.ConsoleApp;
 
@@ -71,10 +69,6 @@ public static class Program
 
     private static int Main(string[] args)
     {
-#if DEBUG
-        args = new[] { "127.0.0.1", "6363" };
-#endif
-
         var start_info = ParseProgramArguments(args);
         Console.WriteLine(start_info.ResultMessage);
         if (!start_info.Succeeded)

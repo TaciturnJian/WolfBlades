@@ -73,16 +73,10 @@ public class DataManager<TStorage, TQuery> : IDataManager<TStorage, TQuery>
     {
         try
         {
-            if (!File.Exists(path))
-            {
-                using var fs = File.Create(path);
-                fs.Write(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Database)));
-            }
-            else
-            {
-                using var fs = File.OpenWrite(path);
-                fs.Write(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Database)));
-            }
+            if (File.Exists(path)) File.Delete(path);
+
+            using var fs = File.Create(path);
+            fs.Write(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Database, Formatting.Indented)));
 
             return true;
         }
@@ -104,10 +98,8 @@ public class DataManager<TStorage, TQuery> : IDataManager<TStorage, TQuery>
             }
 
             var text = Encoding.UTF8.GetString(File.ReadAllBytes(path));
-            if (JsonConvert.DeserializeObject(text, typeof(Dictionary<int, TStorage>)) is not Dictionary<int, TStorage> dictionary)
-            {
-                return false;
-            }
+            if (JsonConvert.DeserializeObject(text, typeof(Dictionary<int, TStorage>)) is not Dictionary<int, TStorage>
+                dictionary) return false;
 
             Database = dictionary;
             return true;

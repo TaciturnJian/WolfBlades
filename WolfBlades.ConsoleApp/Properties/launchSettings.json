@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Server": {
+      "commandName": "Project",
+      "commandLineArgs": "127.0.0.1 6363"
+    },
+    "Client": {
+      "commandName": "Project",
+      "commandLineArgs": "127.0.0.1 6363 -client"
+    }
+  }
+}

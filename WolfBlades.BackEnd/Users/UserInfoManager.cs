@@ -1,4 +1,6 @@
-﻿namespace WolfBlades.BackEnd.Users;
+﻿using System.Diagnostics;
+
+namespace WolfBlades.BackEnd.Users;
 
 public class UserInfoManager : DataManager<UserStorageInfo, UserInfo>
 {
