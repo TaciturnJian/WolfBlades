@@ -298,6 +298,7 @@ public class Server : ICanStart
     {
         var connection_info = new ConnectionInfo
         {
+            ID = -1,
             IPAddress = connection.ConnectionInfo.ClientIpAddress,
             Port = connection.ConnectionInfo.ClientPort,
             LoginUserID = -1,
@@ -329,8 +330,6 @@ public class Server : ICanStart
     private void HandleConnectionClose(ref ConnectionInfo info)
     {
         FleckLog.Info($"与 {info.IPAddress}:{info.Port} 断开连接");
-
-        info = new ConnectionInfo();
 
         if (info.ID < 0) return;
 
@@ -699,7 +698,7 @@ public class Server : ICanStart
     {
         FleckLog.Info($"[{info.ID}] 查询(user)");
 
-        if (info.UserAuthority < 2)
+        if (info.UserAuthority < 1)
         {
             send("-1");
             return;
@@ -720,6 +719,11 @@ public class Server : ICanStart
                 {
                     send("-3");
                     return;
+                }
+
+                if (info.UserAuthority < 3)
+                {
+                    user_info.Token = string.Empty;
                 }
 
                 send(JsonConvert.SerializeObject(user_info));

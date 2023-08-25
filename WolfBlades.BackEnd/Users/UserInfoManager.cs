@@ -9,7 +9,7 @@ public class UserInfoManager : DataManager<UserStorageInfo, UserInfo>
             if (user.Name != userName) continue;
 
             if (user.TokenValue == loginValue)
-                return user.TokenGeneratedTime + user.TokenTimeBeforeExpire > DateTime.Now ? -2 : id;
+                return user.TokenGeneratedTime + user.TokenTimeBeforeExpire >= DateTime.Now ? id : -2;
 
             if (user.Password != loginValue) return -2;
 
