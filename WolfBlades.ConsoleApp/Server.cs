@@ -767,6 +767,11 @@ public class Server : ICanStart
                 send(JsonConvert.SerializeObject(ids));
                 return;
             }
+            default:
+            {
+                send("-未知的目标选择器");
+                return;
+            }
         }
     }
 
