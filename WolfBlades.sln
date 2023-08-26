@@ -3,9 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WolfBlades.ConsoleApp", "WolfBlades.ConsoleApp\WolfBlades.ConsoleApp.csproj", "{8D1DB860-142E-4C5D-8215-9210D7FC5587}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolfBlades.ConsoleApp", "WolfBlades.ConsoleApp\WolfBlades.ConsoleApp.csproj", "{8D1DB860-142E-4C5D-8215-9210D7FC5587}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WolfBlades.BackEnd", "WolfBlades.BackEnd\WolfBlades.BackEnd.csproj", "{946F71F9-3193-4B5E-A5E4-198E0F912164}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WolfBlades.BackEnd", "WolfBlades.BackEnd\WolfBlades.BackEnd.csproj", "{946F71F9-3193-4B5E-A5E4-198E0F912164}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ForGithub", "ForGithub", "{02FEFC7F-C6DE-4272-9E5F-352D0EE95122}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
