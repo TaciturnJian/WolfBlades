@@ -24,7 +24,7 @@ public static class Program
             return info;
         }
 
-        info.IPAddress = args[0];
+        /*info.IPAddress = args[0];
 
         if (!int.TryParse(args[1], out info.Port))
         {
@@ -33,7 +33,8 @@ public static class Program
             return info;
         }
 
-        Location = $"{info.IPAddress}:{info.Port}";
+        Location = $"{info.IPAddress}:{info.Port}";*/
+        Location = args[0].Length > 15 ? $"[{args[0]}]:{args[1]}" : $"{args[0]}:{args[1]}";
         info.Succeeded = true;
 
         if (args.Length > 2)

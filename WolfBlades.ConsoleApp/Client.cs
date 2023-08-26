@@ -13,12 +13,27 @@ public class Client : ICanStart
         for (; attempt < 10; attempt++)
         {
             FleckLog.Info($"尝试连接到服务器({Program.Location}). 尝试次数: {attempt}");
-            if (!client.ConnectAsync(new Uri($"ws://{Program.Location}"), CancellationToken.None).IsFaulted) break;
+
+            var failed = false;
+            try
+            {
+                client.ConnectAsync(new Uri($"ws://{Program.Location}"), CancellationToken.None);
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                client.ReceiveAsync(new ArraySegment<byte>(Array.Empty<byte>()), CancellationToken.None);
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+            }
+            catch (Exception ex)
+            {
+                FleckLog.Error($"无法连接到服务器({Program.Location})", ex);
+                failed = true;
+            }
+
+            if (!failed) break;
         }
 
-        if (attempt == 10)
+        if (attempt == 10 || client.State == WebSocketState.Aborted)
         {
-            FleckLog.Error($"无法连接到服务器({Program.Location})");
+            FleckLog.Error($"放弃与服务器的连接({Program.Location})");
             Environment.Exit(-1);
         }
 

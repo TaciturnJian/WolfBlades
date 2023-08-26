@@ -10,7 +10,7 @@
     },
     "Client": {
       "commandName": "Project",
-      "commandLineArgs": "127.0.0.1 6363 -client"
+      "commandLineArgs": "61.147.227.230 61156 -client"
     }
   }
 }
