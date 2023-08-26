@@ -14,7 +14,7 @@ namespace WolfBlades.ConsoleApp;
 
 public class Server : ICanStart
 {
-    public delegate void ConnectionCommandDelegate(ref ConnectionInfo info, string arg, CanSend send);
+    public delegate void ConnectionCommandDelegate(ref ConnectionInfo info, string arg, Action<string> send);
 
     protected Dictionary<string, ConnectionCommandDelegate> AddCommands;
 
@@ -96,7 +96,7 @@ public class Server : ICanStart
         WebSocketServer.Dispose();
     }
 
-    private static int HandleParseID(string arg, CanSend send)
+    private static int HandleParseID(string arg, Action<string> send)
     {
         if (int.TryParse(arg, out var id)) return id;
 
@@ -122,29 +122,40 @@ public class Server : ICanStart
         QueryCommands.Add("connection", HandleQueryConnection);
 
         UpdateCommands.Add("unit",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleUpdateTemplate(UnitInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleUpdateTemplate(UnitInfoManager, arg, send));
         UpdateCommands.Add("task",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleUpdateTemplate(TaskInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleUpdateTemplate(TaskInfoManager, arg, send));
         UpdateCommands.Add("comment",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleUpdateTemplate(CommentInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleUpdateTemplate(CommentInfoManager, arg, send));
         UpdateCommands.Add("document",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleUpdateTemplate(DocumentInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleUpdateTemplate(DocumentInfoManager, arg, send));
 
         AddCommands.Add("unit",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleAppendTemplate(UnitInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleAppendTemplate(UnitInfoManager, arg, send));
         AddCommands.Add("task",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleAppendTemplate(TaskInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleAppendTemplate(TaskInfoManager, arg, send));
         AddCommands.Add("comment",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleAppendTemplate(CommentInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleAppendTemplate(CommentInfoManager, arg, send));
         AddCommands.Add("document",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleAppendTemplate(DocumentInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleAppendTemplate(DocumentInfoManager, arg, send));
 
         RemoveCommands.Add("task",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleRemoveTemplate(TaskInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleRemoveTemplate(TaskInfoManager, arg, send));
         RemoveCommands.Add("comment",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleRemoveTemplate(CommentInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleRemoveTemplate(CommentInfoManager, arg, send));
         RemoveCommands.Add("document",
-            (ref ConnectionInfo _, string arg, CanSend send) => HandleRemoveTemplate(DocumentInfoManager, arg, send));
+            (ref ConnectionInfo _, string arg, Action<string> send) =>
+                HandleRemoveTemplate(DocumentInfoManager, arg, send));
     }
 
     private void ReadDataFromFiles()
@@ -177,7 +188,7 @@ public class Server : ICanStart
         UserInfoManager.SaveDataToFile($"{nameof(UserInfoManager).Replace("Manager", ".db")}");
     }
 
-    private void HandleCommand(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleCommand(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 请求(command)");
 
@@ -199,7 +210,7 @@ public class Server : ICanStart
         Commands[flag](ref info, arg[(space_index + 1)..], send);
     }
 
-    private static void HandleEcho(ref ConnectionInfo info, string arg, CanSend send)
+    private static void HandleEcho(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 请求(echo)");
 
@@ -212,7 +223,7 @@ public class Server : ICanStart
         send(arg);
     }
 
-    private void HandleLogin(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleLogin(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 请求(login)");
 
@@ -248,7 +259,7 @@ public class Server : ICanStart
 
     #region Update
 
-    private void HandleUpdate(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleUpdate(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 请求(update)");
 
@@ -277,7 +288,7 @@ public class Server : ICanStart
     }
 
     private static void HandleUpdateTemplate<TStorage, TQuery>(IDataManager<TStorage, TQuery> manager, string arg,
-        CanSend send)
+        Action<string> send)
         where TStorage : class, IDataStorage<TQuery>, new()
         where TQuery : struct
     {
@@ -309,7 +320,7 @@ public class Server : ICanStart
         connection.OnOpen = () =>
             FleckLog.Info($"建立新连接 {connection_info.IPAddress}:{connection_info.Port}");
 
-        var send = new CanSend(message => FleckLog.Info($"{connection_info.LogPrefix}{message}"));
+        var send = new Action<string>(message => FleckLog.Info($"{connection_info.LogPrefix}{message}"));
         send += message => connection.Send(message);
 
         connection_info.ID = ConnectionInfoManager.AddItem(connection_info);
@@ -339,7 +350,7 @@ public class Server : ICanStart
         info = new ConnectionInfo();
     }
 
-    private void HandleConnectionMessage(ref ConnectionInfo info, string command, CanSend send)
+    private void HandleConnectionMessage(ref ConnectionInfo info, string command, Action<string> send)
     {
         if (command.Length == 0)
         {
@@ -601,7 +612,7 @@ public class Server : ICanStart
 
     #region Query
 
-    private void HandleQuery(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleQuery(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 请求(query)");
 
@@ -629,7 +640,7 @@ public class Server : ICanStart
         QueryCommands[target](ref info, arg[(space_index + 1)..], send);
     }
 
-    private void HandleQueryUnit(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleQueryUnit(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 查询(unit)");
 
@@ -694,7 +705,7 @@ public class Server : ICanStart
         }
     }
 
-    private void HandleQueryUser(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleQueryUser(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 查询(user)");
 
@@ -721,10 +732,7 @@ public class Server : ICanStart
                     return;
                 }
 
-                if (info.UserAuthority < 3)
-                {
-                    user_info.Token = string.Empty;
-                }
+                if (info.UserAuthority < 3) user_info.Token = string.Empty;
 
                 send(JsonConvert.SerializeObject(user_info));
                 return;
@@ -779,7 +787,7 @@ public class Server : ICanStart
         }
     }
 
-    private void HandleQueryTask(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleQueryTask(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 查询(task)");
 
@@ -827,7 +835,7 @@ public class Server : ICanStart
         }
     }
 
-    private void HandleQueryComment(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleQueryComment(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 查询(comment)");
 
@@ -880,7 +888,7 @@ public class Server : ICanStart
         }
     }
 
-    private void HandleQueryDocument(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleQueryDocument(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 查询(document)");
 
@@ -931,7 +939,7 @@ public class Server : ICanStart
         }
     }
 
-    private void HandleQueryConnection(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleQueryConnection(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 查询(connection)");
 
@@ -964,7 +972,7 @@ public class Server : ICanStart
 
     #region Append
 
-    private void HandleAppend(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleAppend(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 请求(append)");
 
@@ -993,7 +1001,7 @@ public class Server : ICanStart
     }
 
     private static void HandleAppendTemplate<TStorage, TQuery>(IDataManager<TStorage, TQuery> manager, string arg,
-        CanSend send)
+        Action<string> send)
         where TStorage : class, IDataStorage<TQuery>, new()
         where TQuery : struct
     {
@@ -1006,7 +1014,7 @@ public class Server : ICanStart
 
     #region Remove
 
-    private void HandleRemove(ref ConnectionInfo info, string arg, CanSend send)
+    private void HandleRemove(ref ConnectionInfo info, string arg, Action<string> send)
     {
         FleckLog.Info($"[{info.ID}] 请求(remove)");
 
@@ -1035,7 +1043,7 @@ public class Server : ICanStart
     }
 
     private static void HandleRemoveTemplate<TStorage, TQuery>(IDataManager<TStorage, TQuery> manager, string arg,
-        CanSend send)
+        Action<string> send)
         where TStorage : class, IDataStorage<TQuery>, new()
         where TQuery : struct
     {
