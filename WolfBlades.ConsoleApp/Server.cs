@@ -16,15 +16,15 @@ public class Server : ICanStart
 {
     public delegate void ConnectionCommandDelegate(ref ConnectionInfo info, string arg, Action<string> send);
 
-    protected Dictionary<string, ConnectionCommandDelegate> AddCommands;
+    protected Dictionary<string, ConnectionCommandDelegate> AddCommands { get; }
 
-    protected Dictionary<string, ConnectionCommandDelegate> Commands;
+    protected Dictionary<string, ConnectionCommandDelegate> Commands { get; }
 
-    protected Dictionary<string, ConnectionCommandDelegate> QueryCommands;
+    protected Dictionary<string, ConnectionCommandDelegate> QueryCommands { get; }
 
-    protected Dictionary<string, ConnectionCommandDelegate> RemoveCommands;
+    protected Dictionary<string, ConnectionCommandDelegate> RemoveCommands { get; }
 
-    protected Dictionary<string, ConnectionCommandDelegate> UpdateCommands;
+    protected Dictionary<string, ConnectionCommandDelegate> UpdateCommands { get; }
 
     public Server()
     {
@@ -106,13 +106,12 @@ public class Server : ICanStart
 
     private void RegisterCommands()
     {
-        //指令                                快捷指令
-        Commands.Add("echo", HandleEcho); //!echo <message>                    #<message> 
-        Commands.Add("query", HandleQuery); //!query <target> <selector> <value> ?<target> <selector> <value>
-        Commands.Add("login", HandleLogin); //!login <name> <password>
-        Commands.Add("update", HandleUpdate); //!update <target> <id> <value>      *<target> <id> <value>
-        Commands.Add("append", HandleAppend); //!append <target> <content>         +<target> <content>
-        Commands.Add("remove", HandleRemove); //!remove <target> <id>              -<target> <id>
+        Commands.Add("echo", HandleEcho);
+        Commands.Add("query", HandleQuery);
+        Commands.Add("login", HandleLogin);
+        Commands.Add("update", HandleUpdate);
+        Commands.Add("append", HandleAppend);
+        Commands.Add("remove", HandleRemove);
 
         QueryCommands.Add("unit", HandleQueryUnit);
         QueryCommands.Add("user", HandleQueryUser);

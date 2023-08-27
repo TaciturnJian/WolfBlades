@@ -4,11 +4,11 @@ namespace WolfBlades.ConsoleApp;
 
 public static class Program
 {
-    public static readonly string ApplicationName = "WolfBlades: UnitMonitor";
+    public static readonly string ApplicationName = "小狼窝后端数据服务器";
 
     public static readonly string ApplicationVersion = "1.0.0";
 
-    public static string Location { get; private set; } = "127.0.0.1:6363";
+    public static string Location { get; private set; } = "000.000.000.000:0000";
 
     public static ProgramStartInfo ParseProgramArguments(string[] args)
     {
@@ -24,26 +24,16 @@ public static class Program
             return info;
         }
 
-        /*info.IPAddress = args[0];
-
-        if (!int.TryParse(args[1], out info.Port))
-        {
-            info.Succeeded = false;
-            info.ResultMessage = $"从字符串({args[1]})中解析端口时出现异常";
-            return info;
-        }
-
-        Location = $"{info.IPAddress}:{info.Port}";*/
+        // 区分解析 IPv6 与 IPv4
         Location = args[0].Length > 15 ? $"[{args[0]}]:{args[1]}" : $"{args[0]}:{args[1]}";
         info.Succeeded = true;
 
-        if (args.Length > 2)
-            if (args[2] == "-client")
-            {
-                info.IsClient = true;
-                info.ResultMessage = $"正在尝试开启客户端({Location})";
-                return info;
-            }
+        if (args.Length > 2 && args[2] == "-client")
+        {
+            info.IsClient = true;
+            info.ResultMessage = $"正在尝试开启客户端({Location})";
+            return info;
+        }
 
         info.IsClient = false;
         info.ResultMessage = $"正在尝试开启服务器({Location})";
@@ -86,11 +76,7 @@ public static class Program
 
     public struct ProgramStartInfo
     {
-        public string IPAddress = "";
-        public int Port = 0;
-
         public bool IsClient = false;
-
         public string ResultMessage = "";
         public bool Succeeded = false;
 
