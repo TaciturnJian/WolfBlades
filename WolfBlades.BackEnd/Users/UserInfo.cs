@@ -11,7 +11,7 @@ public struct UserInfo
 
     public UserInfo()
     {
-        TechGroup = new int[] { };
-        UnitGroup = new int[] { };
+        TechGroup = Array.Empty<int>();
+        UnitGroup = Array.Empty<int>();
     }
 }

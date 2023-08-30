@@ -16,8 +16,8 @@ public class UserStorageInfo : IDataStorage<UserInfo>
     {
         Name = data.Name;
         DisplayName = data.DisplayName;
-        TechGroup = data.TechGroup.ToArray();
-        UnitGroup = data.UnitGroup.ToArray();
+        TechGroup = TechGroup.CopyIntArray();
+        UnitGroup = UnitGroup.CopyIntArray();
         Authority = data.Authority;
         TokenValue = data.Token;
     }
@@ -26,8 +26,8 @@ public class UserStorageInfo : IDataStorage<UserInfo>
     {
         data.Name = Name;
         data.DisplayName = DisplayName;
-        data.TechGroup = TechGroup.ToArray();
-        data.UnitGroup = UnitGroup.ToArray();
+        data.TechGroup = TechGroup.CopyIntArray();
+        data.UnitGroup = UnitGroup.CopyIntArray();
         data.Authority = Authority;
         data.Token = TokenValue;
     }

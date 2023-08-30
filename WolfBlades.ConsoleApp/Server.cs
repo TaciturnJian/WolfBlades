@@ -16,7 +16,7 @@ public class Server : ICanStart
 {
     public delegate void ConnectionCommandDelegate(ref ConnectionInfo info, string arg, Action<string> send);
 
-    protected Dictionary<string, ConnectionCommandDelegate> AddCommands { get; }
+    protected Dictionary<string, ConnectionCommandDelegate> AppendCommands { get; }
 
     protected Dictionary<string, ConnectionCommandDelegate> Commands { get; }
 
@@ -50,7 +50,7 @@ public class Server : ICanStart
         Commands = new Dictionary<string, ConnectionCommandDelegate>();
         QueryCommands = new Dictionary<string, ConnectionCommandDelegate>();
         UpdateCommands = new Dictionary<string, ConnectionCommandDelegate>();
-        AddCommands = new Dictionary<string, ConnectionCommandDelegate>();
+        AppendCommands = new Dictionary<string, ConnectionCommandDelegate>();
         RemoveCommands = new Dictionary<string, ConnectionCommandDelegate>();
         RegisterCommands();
 
@@ -133,16 +133,16 @@ public class Server : ICanStart
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleUpdateTemplate(DocumentInfoManager, arg, send));
 
-        AddCommands.Add("unit",
+        AppendCommands.Add("unit",
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleAppendTemplate(UnitInfoManager, arg, send));
-        AddCommands.Add("task",
+        AppendCommands.Add("task",
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleAppendTemplate(TaskInfoManager, arg, send));
-        AddCommands.Add("comment",
+        AppendCommands.Add("comment",
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleAppendTemplate(CommentInfoManager, arg, send));
-        AddCommands.Add("document",
+        AppendCommands.Add("document",
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleAppendTemplate(DocumentInfoManager, arg, send));
 
@@ -322,7 +322,7 @@ public class Server : ICanStart
         var send = new Action<string>(message => FleckLog.Info($"{connection_info.LogPrefix}{message}"));
         send += message => connection.Send(message);
 
-        connection_info.ID = ConnectionInfoManager.AddItem(connection_info);
+        connection_info.ID = ConnectionInfoManager.AppendItem(connection_info);
         connection_info.LogPrefix = $"[{connection_info.ID}]< ";
         connection.OnClose = () => HandleConnectionClose(ref connection_info);
         if (connection_info.ID < 0)
@@ -990,13 +990,13 @@ public class Server : ICanStart
         var space_index = arg.IndexOf(' ');
         var target = space_index == -1 ? arg : arg[..space_index];
 
-        if (!AddCommands.ContainsKey(target))
+        if (!AppendCommands.ContainsKey(target))
         {
             send($"-未知添加目标({target})");
             return;
         }
 
-        AddCommands[target](ref info, arg[(space_index + 1)..], send);
+        AppendCommands[target](ref info, arg[(space_index + 1)..], send);
     }
 
     private static void HandleAppendTemplate<TStorage, TQuery>(IDataManager<TStorage, TQuery> manager, string arg,
@@ -1005,7 +1005,7 @@ public class Server : ICanStart
         where TQuery : struct
     {
         var query_info = JsonConvert.DeserializeObject<TQuery>(arg);
-        var id = manager.AddItem(query_info);
+        var id = manager.AppendItem(query_info);
         send(id.ToString());
     }
 

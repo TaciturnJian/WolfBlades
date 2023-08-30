@@ -18,4 +18,12 @@ public static class NoExceptionConverterExtension
     {
         return date.ToString("s").Replace('T', ' ');
     }
+
+    public static int[] CopyIntArray(this int[]? target)
+    {
+        return target is not null &&
+               target.Length > 0
+            ? target.ToArray()
+            : Array.Empty<int>();
+    }
 }

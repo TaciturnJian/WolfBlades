@@ -6,11 +6,11 @@
     },
     "Server": {
       "commandName": "Project",
-      "commandLineArgs": "127.0.0.1 6363"
+      "commandLineArgs": "127.0.0.1 8989"
     },
     "Client": {
       "commandName": "Project",
-      "commandLineArgs": "61.147.227.230 61156 -client"
+      "commandLineArgs": "127.0.0.1 8989 -client"
     }
   }
 }

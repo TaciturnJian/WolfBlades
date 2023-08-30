@@ -23,7 +23,7 @@ public class DataManager<TStorage, TQuery> : IDataManager<TStorage, TQuery>
         return (from data in Database where selector(data.Value) select data.Key).ToArray();
     }
 
-    public int AddItem(TQuery info)
+    public int AppendItem(TQuery info)
     {
         var id = 0;
         for (; id <= Database.Count; id++)
@@ -31,7 +31,15 @@ public class DataManager<TStorage, TQuery> : IDataManager<TStorage, TQuery>
                 break;
 
         var storage = new TStorage();
-        storage.ReadFrom(info);
+        try
+        {
+            storage.ReadFrom(info);
+        }
+        catch
+        {
+            FleckLog.Info("无法读取数据，但仍然尝试存储数据");
+        }
+
         return Database.TryAdd(id, storage) ? id : -1;
     }
 

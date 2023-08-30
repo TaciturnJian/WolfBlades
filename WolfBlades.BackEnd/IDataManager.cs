@@ -8,7 +8,7 @@ public interface IDataManager<out TStorage, TQuery>
 
     int[] QueryIDListBySelector(Func<TStorage, bool> selector);
 
-    int AddItem(TQuery info);
+    int AppendItem(TQuery info);
 
     bool RemoveItem(int id);
 

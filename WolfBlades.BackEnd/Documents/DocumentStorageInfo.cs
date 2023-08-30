@@ -17,8 +17,8 @@ public class DocumentStorageInfo : IDataStorage<DocumentInfo>
         MarkdownBody = data.MarkdownBody;
         UploaderUserID = data.UploaderUserID;
         UploadTime = data.UploadTime.ConvertToDateTime();
-        RelatedTasks = data.RelatedTasks.ToArray();
-        RelatedUsers = data.RelatedUsers.ToArray();
+        RelatedTasks = data.RelatedTasks.CopyIntArray();
+        RelatedUsers = data.RelatedUsers.CopyIntArray();
     }
 
     public void WriteTo(ref DocumentInfo data)
@@ -28,7 +28,7 @@ public class DocumentStorageInfo : IDataStorage<DocumentInfo>
         data.MarkdownBody = MarkdownBody;
         data.UploaderUserID = UploaderUserID;
         data.UploadTime = UploadTime.ConvertToString();
-        data.RelatedTasks = RelatedTasks.ToArray();
-        data.RelatedUsers = RelatedUsers.ToArray();
+        data.RelatedTasks = RelatedTasks.CopyIntArray();
+        data.RelatedUsers = RelatedUsers.CopyIntArray();
     }
 }
