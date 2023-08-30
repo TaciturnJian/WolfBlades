@@ -16,16 +16,6 @@ public class Server : ICanStart
 {
     public delegate void ConnectionCommandDelegate(ref ConnectionInfo info, string arg, Action<string> send);
 
-    protected Dictionary<string, ConnectionCommandDelegate> AppendCommands { get; }
-
-    protected Dictionary<string, ConnectionCommandDelegate> Commands { get; }
-
-    protected Dictionary<string, ConnectionCommandDelegate> QueryCommands { get; }
-
-    protected Dictionary<string, ConnectionCommandDelegate> RemoveCommands { get; }
-
-    protected Dictionary<string, ConnectionCommandDelegate> UpdateCommands { get; }
-
     public Server()
     {
         FleckLog.Info($"Initializing: {nameof(CommentInfoManager).Replace("Info", " ")}");
@@ -59,6 +49,16 @@ public class Server : ICanStart
         FleckLog.Info($"Initializing: {nameof(WebSocketServer).Replace("WebSocket", "")}");
         WebSocketServer = new WebSocketServer(Location);
     }
+
+    protected Dictionary<string, ConnectionCommandDelegate> AppendCommands { get; }
+
+    protected Dictionary<string, ConnectionCommandDelegate> Commands { get; }
+
+    protected Dictionary<string, ConnectionCommandDelegate> QueryCommands { get; }
+
+    protected Dictionary<string, ConnectionCommandDelegate> RemoveCommands { get; }
+
+    protected Dictionary<string, ConnectionCommandDelegate> UpdateCommands { get; }
 
     public bool IsRunning { get; private set; }
 
@@ -136,9 +136,7 @@ public class Server : ICanStart
         AppendCommands.Add("unit",
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleAppendTemplate(UnitInfoManager, arg, send));
-        AppendCommands.Add("task",
-            (ref ConnectionInfo _, string arg, Action<string> send) =>
-                HandleAppendTemplate(TaskInfoManager, arg, send));
+        AppendCommands.Add("task", HandleAppendTask);
         AppendCommands.Add("comment",
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleAppendTemplate(CommentInfoManager, arg, send));
@@ -146,9 +144,7 @@ public class Server : ICanStart
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleAppendTemplate(DocumentInfoManager, arg, send));
 
-        RemoveCommands.Add("task",
-            (ref ConnectionInfo _, string arg, Action<string> send) =>
-                HandleRemoveTemplate(TaskInfoManager, arg, send));
+        RemoveCommands.Add("task", HandleRemoveTask);
         RemoveCommands.Add("comment",
             (ref ConnectionInfo _, string arg, Action<string> send) =>
                 HandleRemoveTemplate(CommentInfoManager, arg, send));
@@ -1006,7 +1002,34 @@ public class Server : ICanStart
     {
         var query_info = JsonConvert.DeserializeObject<TQuery>(arg);
         var id = manager.AppendItem(query_info);
+
+        if (id == -1)
+        {
+            send("-2");
+            return;
+        }
+
         send(id.ToString());
+    }
+
+    private void HandleAppendTask(ref ConnectionInfo info, string arg, Action<string> send)
+    {
+        var query_info = JsonConvert.DeserializeObject<TaskInfo?>(arg) ?? new TaskInfo();
+        var task_id = TaskInfoManager.AppendItem(query_info);
+
+        if (task_id == -1)
+        {
+            send("-2");
+            return;
+        }
+
+        if (!UnitInfoManager.AppendTaskInUnitProgressTask(query_info.BindUnitID, task_id))
+        {
+            send("-3");
+            return;
+        }
+
+        send(task_id.ToString());
     }
 
     #endregion
@@ -1054,6 +1077,32 @@ public class Server : ICanStart
         }
 
         send(manager.RemoveItem(id) ? id.ToString() : "-2");
+    }
+
+    private void HandleRemoveTask(ref ConnectionInfo info, string arg, Action<string> send)
+    {
+        var task_id = HandleParseID(arg, send);
+        if (task_id < 0)
+        {
+            send(task_id.ToString());
+            return;
+        }
+
+        var task_info = new TaskInfo();
+        if (!TaskInfoManager.QueryInfoByID(task_id, ref task_info))
+        {
+            send("-2");
+            return;
+        }
+
+        if (!UnitInfoManager.RemoveTaskInUnitProgressTask(task_info.BindUnitID, task_id) || !
+                TaskInfoManager.RemoveItem(task_id))
+        {
+            send("-3");
+            return;
+        }
+
+        send(task_id.ToString());
     }
 
     #endregion

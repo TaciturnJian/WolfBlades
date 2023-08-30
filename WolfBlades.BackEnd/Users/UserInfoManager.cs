@@ -1,4 +1,6 @@
-﻿namespace WolfBlades.BackEnd.Users;
+﻿using System.Text;
+
+namespace WolfBlades.BackEnd.Users;
 
 public class UserInfoManager : DataManager<UserStorageInfo, UserInfo>
 {
@@ -22,8 +24,33 @@ public class UserInfoManager : DataManager<UserStorageInfo, UserInfo>
 
     private static void GenerateTokenForUser(UserStorageInfo user)
     {
-        user.TokenValue = "token";                              //TODO Generate token
         user.TokenGeneratedTime = DateTime.Now;
         user.TokenTimeBeforeExpire = TimeSpan.FromDays(1);
+
+        var code_nam = user.Name.GetHashCode();
+        var code_tim = user.TokenGeneratedTime.ConvertToString().GetHashCode();
+        var code_xor = code_nam ^ code_tim;
+        var code_add = code_nam + code_tim;
+        var code_sub = code_nam - code_tim;
+        var code_otp = (code_nam % 1024 * (code_tim % 512)) ^ (code_add % 2048 * (code_sub % 512));
+
+        int[] codes = { code_nam, code_add, code_sub, code_xor, code_otp, code_tim };
+        var code_ext = new StringBuilder();
+
+        foreach (var code in codes)
+        foreach (var @byte in BitConverter.GetBytes(code + code_tim))
+        {
+            var hash = @byte.GetHashCode();
+            var xor = hash ^ code;
+            var word = Math.Abs((hash + code) % 3) switch
+            {
+                0 => (char)(Math.Abs(xor % 10) + '0'),
+                1 => (char)(Math.Abs(xor % 26) + 'a'),
+                _ => (char)(Math.Abs(xor % 26) + 'A')
+            };
+            code_ext.Append(word);
+        }
+
+        user.TokenValue = code_ext.ToString(); //TODO Generate token
     }
 }
