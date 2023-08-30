@@ -32,7 +32,7 @@ public class UserInfoManager : DataManager<UserStorageInfo, UserInfo>
         var code_xor = code_nam ^ code_tim;
         var code_add = code_nam + code_tim;
         var code_sub = code_nam - code_tim;
-        var code_otp = (code_nam % 1024 * (code_tim % 512)) ^ (code_add % 2048 * (code_sub % 512));
+        var code_otp = (code_nam * code_tim) ^ (code_add * code_sub);
 
         int[] codes = { code_nam, code_add, code_sub, code_xor, code_otp, code_tim };
         var code_ext = new StringBuilder();
