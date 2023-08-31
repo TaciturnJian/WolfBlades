@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Fleck;
+using Newtonsoft.Json;
 
 namespace WolfBlades.BackEnd.ItemManager;
 
@@ -9,10 +10,17 @@ public static class TinyConverterExtension
         return JsonConvert.SerializeObject(source, indented ? Formatting.Indented : Formatting.None);
     }
 
-    public static void EasyReadFrom<T>(this T item, string content) where T : IItem
+    public static void EasyReadFrom<T>(this T item, string content) where T : IItem, new()
     {
-        var obj = JsonConvert.DeserializeObject<T>(content);
-        if (obj != null) item.ReadFrom(obj);
+        try
+        {
+            var obj = JsonConvert.DeserializeObject<T>(content);
+            if (obj != null) item.ReadFrom(obj);
+        }
+        catch (Exception ex)
+        {
+            FleckLog.Warn("", ex);
+        }
     }
 
     public static int ToID(this string? text)
