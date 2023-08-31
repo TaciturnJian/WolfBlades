@@ -13,12 +13,12 @@ public class UserInfo : IItem
     /// <summary>
     ///     用户口令生成的时间
     /// </summary>
-    public DateTime TokenGeneratedTime = DateTime.Now;
+    public string TokenGeneratedTime = TinyConverterExtension.ConvertToString(DateTime.Now);
 
     /// <summary>
     ///     用户登录口令的持续时间
     /// </summary>
-    public TimeSpan TokenTimeBeforeExpire = TimeSpan.FromDays(1);
+    public TimeSpan TokenTimeBeforeExpire = TimeSpan.Zero;
 
     /// <summary>
     ///     用户名，用于用户登录

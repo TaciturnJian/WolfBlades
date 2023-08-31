@@ -38,7 +38,7 @@ public class DocumentInfo : IItem
     /// <summary>
     ///     文档的上传时间
     /// </summary>
-    public DateTime UploadTime = DateTime.Now;
+    public string UploadTime = TinyConverterExtension.ConvertToString(DateTime.Now);
 
     public int ID { get; set; }
 

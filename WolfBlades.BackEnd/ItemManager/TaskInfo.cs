@@ -13,7 +13,7 @@ public class TaskInfo : IItem
     /// <summary>
     ///     任务预定期限
     /// </summary>
-    public DateTime DeadLine { get; set; } = DateTime.Now;
+    public string DeadLine { get; set; } = TinyConverterExtension.ConvertToString(DateTime.Now);
 
     /// <summary>
     ///     任务描述
@@ -48,7 +48,7 @@ public class TaskInfo : IItem
     /// <summary>
     ///     任务的开始时间
     /// </summary>
-    public DateTime StartTime { get; set; } = DateTime.Now;
+    public string StartTime { get; set; } = TinyConverterExtension.ConvertToString(DateTime.Now);
 
     public int ID { get; set; } = -1;
 

@@ -499,7 +499,7 @@ public class DataServer
         else
         {
             if (login_value == target_user.Token &&
-                DateTime.Now > target_user.TokenGeneratedTime + target_user.TokenTimeBeforeExpire)
+                DateTime.Now > target_user.TokenGeneratedTime.ConvertToDateTime() + target_user.TokenTimeBeforeExpire)
                 succeeded = true;
             else
                 succeeded = false;
@@ -510,7 +510,7 @@ public class DataServer
             var user = new UserInfo();
             user.ReadFrom(target_user);
             user.Password = "Blocked";
-            user.TokenGeneratedTime = DateTime.MinValue;
+            user.TokenGeneratedTime = TinyConverterExtension.ConvertToString(DateTime.MinValue);
             user.TokenTimeBeforeExpire = TimeSpan.Zero;
 
             connection_info.LoginUserID = user.ID;
@@ -550,7 +550,7 @@ public class DataServer
         if (connection_info.UserAuthority < 2)
         {
             user.Password = "Blocked";
-            user.TokenGeneratedTime = DateTime.MinValue;
+            user.TokenGeneratedTime = TinyConverterExtension.ConvertToString(DateTime.MinValue);
             user.TokenTimeBeforeExpire = TimeSpan.Zero;
         }
 
