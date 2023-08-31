@@ -493,7 +493,7 @@ public class DataServer
         bool succeeded;
         if (login_value == target_user.Password)
         {
-            ignore_SeSc.GenerateTokenForUser(target_user);
+            IgnoreSeSc.GenerateTokenForUser(target_user);
             succeeded = true;
         }
         else
