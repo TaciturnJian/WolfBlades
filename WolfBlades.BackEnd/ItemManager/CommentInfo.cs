@@ -31,7 +31,7 @@ public class CommentInfo : IItem
         BindTaskID = obj.BindTaskID;
         MarkdownBody = obj.MarkdownBody;
         UploaderUserID = obj.UploaderUserID;
-        UploadTime = obj.UploadTime;
+        UploadTime = TinyConverterExtension.ConvertToString(obj.UploadTime.ConvertToDateTime());
         ID = obj.ID;
     }
 

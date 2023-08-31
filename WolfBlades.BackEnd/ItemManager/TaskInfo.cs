@@ -23,17 +23,17 @@ public class TaskInfo : IItem
     /// <summary>
     ///     绑定的文档的ID
     /// </summary>
-    public int DocumentID { get; set; } = -1; //任务文档的ID
+    public int DocumentID { get; set; } = -1;
 
     /// <summary>
     ///     任务的结束时间
     /// </summary>
-    public DateTime EndTime { get; set; } = DateTime.Now;
+    public string EndTime { get; set; } = TinyConverterExtension.ConvertToString(DateTime.Now);
 
     /// <summary>
     ///     负责人列表
     /// </summary>
-    public List<int> InChargeUsers { get; set; } = new(); //所有负责人员的ID
+    public List<int> InChargeUsers { get; set; } = new();
 
     /// <summary>
     ///     任务名称
@@ -57,14 +57,14 @@ public class TaskInfo : IItem
         if (item is not TaskInfo obj) return;
 
         BindUnitID = obj.BindUnitID;
-        DeadLine = obj.DeadLine;
+        DeadLine = TinyConverterExtension.ConvertToString(obj.DeadLine.ConvertToDateTime());
         Description = obj.Description;
         DocumentID = obj.DocumentID;
-        EndTime = obj.EndTime;
+        EndTime = TinyConverterExtension.ConvertToString(obj.EndTime.ConvertToDateTime());
         InChargeUsers = new List<int>(obj.InChargeUsers);
         Name = obj.Name;
         Progress = obj.Progress;
-        StartTime = obj.StartTime;
+        StartTime = TinyConverterExtension.ConvertToString(obj.StartTime.ConvertToDateTime());
         ID = obj.ID;
     }
 

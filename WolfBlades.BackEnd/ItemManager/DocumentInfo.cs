@@ -52,7 +52,7 @@ public class DocumentInfo : IItem
         RelatedUsers = new List<int>(obj.RelatedUsers);
         Title = obj.Title;
         UploaderUserID = obj.UploaderUserID;
-        UploadTime = obj.UploadTime;
+        UploadTime = TinyConverterExtension.ConvertToString(obj.UploadTime.ConvertToDateTime());
         ID = obj.ID;
     }
 

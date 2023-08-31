@@ -57,7 +57,7 @@ public class UserInfo : IItem
         if (item is not UserInfo obj) return;
 
         Password = obj.Password;
-        TokenGeneratedTime = obj.TokenGeneratedTime;
+        TokenGeneratedTime = TinyConverterExtension.ConvertToString(obj.TokenGeneratedTime.ConvertToDateTime());
         TokenTimeBeforeExpire = obj.TokenTimeBeforeExpire;
         Name = obj.Name;
         DisplayName = obj.DisplayName;

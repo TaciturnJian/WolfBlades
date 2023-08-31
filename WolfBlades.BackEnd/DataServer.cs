@@ -89,7 +89,24 @@ public class DataServer
 
                     output(item[0].ToString());
                     return 0;
-                }))
+                })
+                .Register("user_display_name",  (connectionID, arg, output) =>
+                {
+                    var guard = CommandAuthorityGuard(connectionID, output, 1, out _);
+                    if (guard < 0) return guard;
+
+                    var item = Managers[ManagerType.User]
+                        .SelectItems(item => item is UserInfo user && user.DisplayName == arg);
+                    if (item.Length == 0)
+                    {
+                        output("-找不到用户");
+                        return -1;
+                    }
+
+                    output(item[0].ToString());
+                    return 0;
+                })
+            )
             .Register("unit", new OneLineCommand()
                 .Register("id", (connectionID, arg, output) =>
                     {
@@ -395,12 +412,14 @@ public class DataServer
                 return;
 
             if (Managers[ManagerType.Unit].GetItem(obj.BindUnitID) is not UnitInfo unit ||
-                !unit.InProgressTasks.Contains(obj.ID))
+                unit.InProgressTasks.Contains(obj.ID))
             {
                 return;
             }
 
             unit.InProgressTasks.Add(obj.ID);
+
+            Managers[ManagerType.Unit].UpdateItem(obj.BindUnitID, unit);
         };
 
         Managers[ManagerType.Task].WhenRemoveItem += (sender, arg) =>
@@ -412,6 +431,7 @@ public class DataServer
                 return;
 
             unit.InProgressTasks.Remove(obj.ID);
+            Managers[ManagerType.Unit].UpdateItem(obj.BindUnitID, unit);
         };
 
         Managers[ManagerType.Task].WhenUpdateItem += (sender, arg) =>
@@ -419,15 +439,12 @@ public class DataServer
             if (arg.Item is not TaskInfo obj
                 || obj.BindUnitID == -1
                 || Managers[ManagerType.Unit].GetItem(obj.BindUnitID) is not UnitInfo unit
-                || !unit.InProgressTasks.Contains(obj.ID))
+                || unit.InProgressTasks.Contains(obj.ID))
                 return;
 
             unit.InProgressTasks.Add(obj.ID);
+            Managers[ManagerType.Unit].UpdateItem(obj.BindUnitID, unit);
         };
-
-
-
-
     }
 
     private int CommandAuthorityGuard(int connectionID, Action<string> output, int authority,
@@ -499,7 +516,7 @@ public class DataServer
         else
         {
             if (login_value == target_user.Token &&
-                DateTime.Now > target_user.TokenGeneratedTime.ConvertToDateTime() + target_user.TokenTimeBeforeExpire)
+                DateTime.Now < target_user.TokenGeneratedTime.ConvertToDateTime() + target_user.TokenTimeBeforeExpire)
                 succeeded = true;
             else
                 succeeded = false;

@@ -42,8 +42,8 @@ public class UnitInfo : IItem
         DisplayName = obj.DisplayName;
         UnitGroup = obj.UnitGroup;
         CurrentUserID = obj.CurrentUserID;
-        InProgressTasks = new List<int>(InProgressTasks);
-        InChargeUsers = new List<int>(InChargeUsers);
+        InProgressTasks = new List<int>(obj.InProgressTasks);
+        InChargeUsers = new List<int>(obj.InChargeUsers);
         ID = obj.ID;
     }
 

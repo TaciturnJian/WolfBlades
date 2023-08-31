@@ -68,9 +68,8 @@ public class ItemManager<T> : IItemManager
     {
         if (!Database.ContainsKey(id)) return true;
 
-        Database.Remove(id);
         var item = Database[id];
-        item.ID = -1;
+        Database.Remove(id);
         WhenRemoveItem?.Invoke(this, new ManagerEventArgs { Item = item });
         return true;
     }
@@ -79,6 +78,7 @@ public class ItemManager<T> : IItemManager
     {
         if (!Database.ContainsKey(id)) return false;
 
+        item.ID = id;
         Database[id].ReadFrom(item);
         WhenUpdateItem?.Invoke(this, new ManagerEventArgs { Item = Database[id] });
         return true;
