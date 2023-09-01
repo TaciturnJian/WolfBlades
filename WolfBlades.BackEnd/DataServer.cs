@@ -30,20 +30,6 @@ public class DataServer
         Save();
     }
 
-    /*public static ManagerType ParseManagerType(string selector)
-    {
-        return selector.ToLower() switch
-        {
-            "comment" => ManagerType.Comment,
-            "connection" => ManagerType.Connection,
-            "document" => ManagerType.Document,
-            "task" => ManagerType.Task,
-            "unit" => ManagerType.Unit,
-            "user" => ManagerType.User,
-            _ => ManagerType.Unknown
-        };
-    }*/
-
     private bool Initialize<T>(ManagerType managerType) where T : IItem, new()
     {
         var name = typeof(T).ToString().Replace("Info", "").Split('.')[^1];
@@ -52,11 +38,11 @@ public class DataServer
         return Managers[managerType].ReadDataFromFile($"{name}Info.db");
     }
 
-    private bool SaveData<T>(ManagerType managerType) where T : IItem, new()
+    private void SaveData<T>(ManagerType managerType) where T : IItem, new()
     {
         FleckLog.Info($"正在保存组件数据: {typeof(T).ToString().Replace("Info", " ")}");
         var manager = Managers[managerType];
-        return manager.SaveDataToFile($"{manager.Name}Info.db");
+        manager.SaveDataToFile($"{manager.Name}Info.db");
     }
 
     public void Save()
@@ -406,7 +392,7 @@ public class DataServer
 
     private void RegisterEvents()
     {
-        Managers[ManagerType.Task].WhenAppendItem += (sender, arg) =>
+        Managers[ManagerType.Task].WhenAppendItem += (_, arg) =>
         {
             if (arg.Item is not TaskInfo obj || obj.BindUnitID == -1)
                 return;
@@ -422,7 +408,7 @@ public class DataServer
             Managers[ManagerType.Unit].UpdateItem(obj.BindUnitID, unit);
         };
 
-        Managers[ManagerType.Task].WhenRemoveItem += (sender, arg) =>
+        Managers[ManagerType.Task].WhenRemoveItem += (_, arg) =>
         {
             if (arg.Item is not TaskInfo obj
                 || obj.BindUnitID == -1
@@ -434,7 +420,7 @@ public class DataServer
             Managers[ManagerType.Unit].UpdateItem(obj.BindUnitID, unit);
         };
 
-        Managers[ManagerType.Task].WhenUpdateItem += (sender, arg) =>
+        Managers[ManagerType.Task].WhenUpdateItem += (_, arg) =>
         {
             if (arg.Item is not TaskInfo obj
                 || obj.BindUnitID == -1
@@ -476,7 +462,7 @@ public class DataServer
 
         connection_info.LoginUserID = -1;
         connection_info.UserAuthority = 0;
-
+        
         if (args.Length < 2)
         {
             output("-错误的登录指令，正确格式：!login <name> <loginValue>");

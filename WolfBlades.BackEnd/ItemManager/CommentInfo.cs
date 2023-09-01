@@ -1,5 +1,8 @@
 ﻿namespace WolfBlades.BackEnd.ItemManager;
 
+/// <summary>
+///     评论信息
+/// </summary>
 public class CommentInfo : IItem
 {
     /// <summary>

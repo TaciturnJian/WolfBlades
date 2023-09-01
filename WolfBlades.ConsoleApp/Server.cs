@@ -10,13 +10,26 @@ public class Server : ICanStart
 {
     protected DataServer DataServer;
 
+    protected Timer SaveTimer = new();
+
     public Server()
     {
-        FleckLog.Info($"正在初始化数据服务器: DataServer");
+        FleckLog.Info("正在初始化数据服务器: DataServer");
         DataServer = new DataServer();
+
+        SaveTimer.AutoReset = true;
+        SaveTimer.Interval = 1000 * 60 * 60 * 2;
+        SaveTimer.Elapsed += SaveTimer_Elapsed;
 
         FleckLog.Info($"正在初始化: {nameof(WebSocketServer).Replace("WebSocket", "")}");
         WebSocketServer = new WebSocketServer(Location);
+
+        SaveTimer.Start();
+    }
+
+    private void SaveTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+    {
+        DataServer.Save();
     }
 
     public bool IsRunning { get; private set; }
@@ -38,6 +51,10 @@ public class Server : ICanStart
 
     ~Server()
     {
+        SaveTimer.Stop();
+        SaveTimer.Elapsed -= SaveTimer_Elapsed;
+        SaveTimer.Dispose();
+
         DataServer.Save();
         WebSocketServer.Dispose();
     }
@@ -105,6 +122,14 @@ public class Server : ICanStart
 
     private void HandleConsoleInput()
     {
+        if (!Environment.UserInteractive)
+        {
+            while (IsRunning)
+            {
+            }
+            return;
+        }
+
         var input_buffer = new StringBuilder();
         using var output_timer = new Timer();
 

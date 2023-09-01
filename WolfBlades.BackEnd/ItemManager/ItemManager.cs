@@ -147,11 +147,3 @@ public class ItemManager<T> : IItemManager
         return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 }
-
-public class TechGroupInfo
-{
-}
-
-public class UnitGroupInfo
-{
-}
