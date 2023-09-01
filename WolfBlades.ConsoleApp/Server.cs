@@ -150,30 +150,46 @@ public class Server : ICanStart
             Console.WriteLine("再次输入任意内容后退出");
         };
 
+        var read_command = true;
         while (IsRunning)
         {
-            output_timer.Start();
-            var input = Console.ReadKey(true);
-            output_timer.Stop();
-            if ((input.Modifiers & ConsoleModifiers.Control) != 0)
-                if (input.Key == ConsoleKey.C)
-                    IsRunning = false;
-
-            switch (input.Key)
+            if (read_command)
             {
-                case ConsoleKey.Backspace:
-                    if (input_buffer.Length == 0) continue;
-                    input_buffer.Remove(input_buffer.Length - 1, 1);
-                    continue;
+                try
+                {
+                    output_timer.Start();
+                    var input = Console.ReadKey(true);
+                    output_timer.Stop();
+                    if ((input.Modifiers & ConsoleModifiers.Control) != 0)
+                        if (input.Key == ConsoleKey.C)
+                            IsRunning = false;
 
-                case ConsoleKey.Enter:
-                    var command = input_buffer.ToString();
-                    HandleConsoleCommand(command);
-                    input_buffer.Clear();
-                    continue;
-                default:
-                    input_buffer.Append(input.KeyChar);
-                    break;
+                    switch (input.Key)
+                    {
+                        case ConsoleKey.Backspace:
+                            if (input_buffer.Length == 0) continue;
+                            input_buffer.Remove(input_buffer.Length - 1, 1);
+                            continue;
+
+                        case ConsoleKey.Enter:
+                            var command = input_buffer.ToString();
+                            HandleConsoleCommand(command);
+                            input_buffer.Clear();
+                            continue;
+                        default:
+                            input_buffer.Append(input.KeyChar);
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    FleckLog.Info("Cannot read key, stop read command", ex);
+                    read_command = false;
+                }
+            }
+            else
+            {
+                Thread.Sleep(TimeSpan.FromDays(1));
             }
         }
 
